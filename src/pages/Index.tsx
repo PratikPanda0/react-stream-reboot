@@ -1,13 +1,127 @@
-// Update this page (the content is just a fallback if you fail to update the page)
+
+import React, { useState, useEffect } from 'react';
+import { Layout } from '@/components/Layout';
+import { ProcessingSettings } from '@/components/ProcessingSettings';
+import { FileUpload } from '@/components/FileUpload';
+import { ProcessingStatus } from '@/components/ProcessingStatus';
+import { ProcessingDetails } from '@/components/ProcessingDetails';
+import { OutputFiles } from '@/components/OutputFiles';
+import { Button } from '@/components/ui/button';
+import { FileText, Play } from 'lucide-react';
+
+interface UploadedFile {
+  name: string;
+  size: number;
+  type: string;
+}
 
 const Index = () => {
+  const [files, setFiles] = useState<UploadedFile[]>([]);
+  const [pageLimit, setPageLimit] = useState(50);
+  const [parallelWorkers, setParallelWorkers] = useState(4);
+  const [fileTypes, setFileTypes] = useState(['I', 'PDF', 'ZIP']);
+  const [isProcessing, setIsProcessing] = useState(false);
+  const [processedFiles, setProcessedFiles] = useState(1);
+  const [failedFiles, setFailedFiles] = useState(1);
+  const [skippedFiles, setSkippedFiles] = useState(0);
+  const [processingTime, setProcessingTime] = useState(9.0);
+  const [jsonFiles, setJsonFiles] = useState(1);
+  const [tiffFiles, setTiffFiles] = useState(1);
+
+  const handleProcessFiles = () => {
+    if (files.length === 0) return;
+    
+    setIsProcessing(true);
+    setProcessingTime(0);
+    
+    // Simulate processing
+    const interval = setInterval(() => {
+      setProcessingTime(prev => prev + 0.1);
+    }, 100);
+
+    setTimeout(() => {
+      setIsProcessing(false);
+      clearInterval(interval);
+      setProcessingTime(9.0);
+    }, 3000);
+  };
+
   return (
-    <div className="min-h-screen flex items-center justify-center bg-background">
-      <div className="text-center">
-        <h1 className="text-4xl font-bold mb-4">Welcome to Your Blank App</h1>
-        <p className="text-xl text-muted-foreground">Start building your amazing project here!</p>
+    <Layout>
+      <div className="h-full overflow-y-auto">
+        {/* Header */}
+        <header className="bg-card border-b border-border p-6">
+          <div className="flex items-center gap-3">
+            <FileText className="h-8 w-8 text-primary" />
+            <div>
+              <h1 className="text-2xl font-bold text-card-foreground">Document Processing Portal</h1>
+              <p className="text-card-foreground/70 text-sm">
+                Unified PDF & ZIP Processing with Parallel Multimodal Support
+              </p>
+            </div>
+          </div>
+          
+          <div className="mt-4 flex items-center gap-2 text-sm">
+            <div className="bg-primary/20 text-primary px-2 py-1 rounded">
+              📊 Stats
+            </div>
+          </div>
+        </header>
+
+        {/* Main Content */}
+        <div className="p-6 space-y-6">
+          {/* Processing Settings */}
+          <ProcessingSettings
+            pageLimit={pageLimit}
+            parallelWorkers={parallelWorkers}
+            fileTypes={fileTypes}
+            onPageLimitChange={setPageLimit}
+            onParallelWorkersChange={setParallelWorkers}
+            onFileTypesChange={setFileTypes}
+          />
+
+          {/* Two Column Layout */}
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            {/* Left Column - File Upload */}
+            <div className="space-y-6">
+              <FileUpload files={files} onFilesChange={setFiles} />
+              
+              {files.length > 0 && (
+                <Button
+                  onClick={handleProcessFiles}
+                  disabled={isProcessing}
+                  className="w-full bg-processing-red hover:bg-processing-red/90 text-white h-12 text-lg"
+                >
+                  <Play className="h-5 w-5 mr-2" />
+                  {isProcessing ? 'Processing Files...' : 'Process Files'}
+                </Button>
+              )}
+            </div>
+
+            {/* Right Column - Status */}
+            <div className="space-y-6">
+              <ProcessingStatus
+                totalFiles={files.length}
+                processedFiles={processedFiles}
+                failedFiles={failedFiles}
+                skippedFiles={skippedFiles}
+                processingTime={processingTime}
+                isProcessing={isProcessing}
+              />
+              
+              <OutputFiles
+                jsonFiles={jsonFiles}
+                tiffFiles={tiffFiles}
+                isProcessingComplete={!isProcessing && files.length > 0}
+              />
+            </div>
+          </div>
+
+          {/* Processing Details */}
+          <ProcessingDetails isVisible={files.length > 0} />
+        </div>
       </div>
-    </div>
+    </Layout>
   );
 };
 
