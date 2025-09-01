@@ -7,7 +7,7 @@ import { ProcessingStatus } from '@/components/ProcessingStatus';
 import { ProcessingDetails } from '@/components/ProcessingDetails';
 import { OutputFiles } from '@/components/OutputFiles';
 import { Button } from '@/components/ui/button';
-import { FileText, Play } from 'lucide-react';
+import { Play } from 'lucide-react';
 
 interface UploadedFile {
   name: string;
@@ -48,29 +48,10 @@ const Index = () => {
 
   return (
     <Layout>
-      <div className="h-full overflow-y-auto">
-        {/* Header */}
-        <header className="bg-card border-b border-border p-6">
-          <div className="flex items-center gap-3">
-            <FileText className="h-8 w-8 text-primary" />
-            <div>
-              <h1 className="text-2xl font-bold text-card-foreground">Document Processing Portal</h1>
-              <p className="text-card-foreground/70 text-sm">
-                Unified PDF & ZIP Processing with Parallel Multimodal Support
-              </p>
-            </div>
-          </div>
-          
-          <div className="mt-4 flex items-center gap-2 text-sm">
-            <div className="bg-primary/20 text-primary px-2 py-1 rounded">
-              📊 Stats
-            </div>
-          </div>
-        </header>
-
+      <div className="h-full overflow-y-auto bg-background">
         {/* Main Content */}
         <div className="p-6 space-y-6">
-          {/* Processing Settings */}
+          {/* Processing Settings - Always visible at top */}
           <ProcessingSettings
             pageLimit={pageLimit}
             parallelWorkers={parallelWorkers}
@@ -98,7 +79,7 @@ const Index = () => {
               )}
             </div>
 
-            {/* Right Column - Status */}
+            {/* Right Column - Status and Output */}
             <div className="space-y-6">
               <ProcessingStatus
                 totalFiles={files.length}
@@ -117,7 +98,7 @@ const Index = () => {
             </div>
           </div>
 
-          {/* Processing Details */}
+          {/* Processing Details - Full width at bottom */}
           <ProcessingDetails isVisible={files.length > 0} />
         </div>
       </div>

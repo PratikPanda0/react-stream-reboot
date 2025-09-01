@@ -1,10 +1,16 @@
 
 import React from 'react';
-import { FileText, Upload, Settings, BarChart3, Download, Info } from 'lucide-react';
+import { FileText, Info } from 'lucide-react';
 
-export const Sidebar: React.FC = () => {
+interface SidebarProps {
+  collapsed: boolean;
+}
+
+export const Sidebar: React.FC<SidebarProps> = ({ collapsed }) => {
+  if (collapsed) return null;
+
   return (
-    <aside className="w-64 bg-sidebar border-r border-sidebar-border p-4 overflow-y-auto">
+    <aside className="w-64 h-full bg-sidebar border-r border-sidebar-border p-4 overflow-y-auto">
       <div className="mb-6">
         <div className="flex items-center gap-2 mb-4">
           <Info className="h-5 w-5 text-primary" />
