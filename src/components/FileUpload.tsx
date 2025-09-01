@@ -1,7 +1,7 @@
 
 import React, { useCallback, useState } from 'react';
 import { useDropzone } from 'react-dropzone';
-import { Upload, File, X } from 'lucide-react';
+import { Upload, File, X, ChevronRight, ChevronDown } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 
@@ -18,6 +18,7 @@ interface FileUploadProps {
 
 export const FileUpload: React.FC<FileUploadProps> = ({ files, onFilesChange }) => {
   const [dragOver, setDragOver] = useState(false);
+  const [isSettingsExpanded, setIsSettingsExpanded] = useState(false);
 
   const onDrop = useCallback((acceptedFiles: File[]) => {
     const newFiles = acceptedFiles.map(file => ({
@@ -62,22 +63,50 @@ export const FileUpload: React.FC<FileUploadProps> = ({ files, onFilesChange }) 
         </CardTitle>
       </CardHeader>
       <CardContent className="space-y-4">
-        <div
-          {...getRootProps()}
-          className={`upload-area border-2 border-dashed rounded-lg p-4 text-center cursor-pointer transition-colors ${
-            isDragActive || dragOver
-              ? 'border-primary bg-primary/5 drag-over'
-              : 'border-border hover:border-primary/50'
-          }`}
-        >
-          <input {...getInputProps()} />
-          <Upload className="h-8 w-8 text-primary mx-auto mb-2" />
-          <p className="text-card-foreground/60 text-sm mb-2">
-            Drag and drop files or click to browse
-          </p>
-          <Button variant="outline" size="sm" className="bg-secondary border-border text-card-foreground hover:bg-primary hover:text-primary-foreground">
-            Browse Files
-          </Button>
+        {/* Processing Settings Collapsible */}
+        <div className="bg-secondary/20 rounded-lg border border-border">
+          <button
+            onClick={() => setIsSettingsExpanded(!isSettingsExpanded)}
+            className="w-full flex items-center gap-2 p-3 text-left hover:bg-secondary/30 transition-colors"
+          >
+            {isSettingsExpanded ? (
+              <ChevronDown className="h-4 w-4" />
+            ) : (
+              <ChevronRight className="h-4 w-4" />
+            )}
+            <span className="text-sm font-medium text-card-foreground">Processing Settings</span>
+          </button>
+          {isSettingsExpanded && (
+            <div className="p-3 pt-0 border-t border-border">
+              <p className="text-xs text-card-foreground/60">Processing settings would go here</p>
+            </div>
+          )}
+        </div>
+
+        {/* File Upload Area */}
+        <div className="space-y-2">
+          <p className="text-sm text-card-foreground">Choose PDF or ZIP files</p>
+          
+          <div
+            {...getRootProps()}
+            className={`upload-area border-2 border-dashed rounded-lg p-6 text-center cursor-pointer transition-colors ${
+              isDragActive || dragOver
+                ? 'border-primary bg-primary/5 drag-over'
+                : 'border-border hover:border-primary/50'
+            }`}
+          >
+            <input {...getInputProps()} />
+            <Upload className="h-8 w-8 text-card-foreground/60 mx-auto mb-2" />
+            <p className="text-card-foreground/80 text-sm mb-1">
+              Drag and drop files here
+            </p>
+            <p className="text-xs text-card-foreground/60 mb-3">
+              Limit 200MB per file • PDF, ZIP
+            </p>
+            <Button variant="outline" size="sm" className="bg-secondary border-border text-card-foreground hover:bg-primary hover:text-primary-foreground">
+              Browse Files
+            </Button>
+          </div>
         </div>
 
         {files.length === 0 && (
@@ -88,32 +117,48 @@ export const FileUpload: React.FC<FileUploadProps> = ({ files, onFilesChange }) 
           </div>
         )}
 
+        {/* Uploaded Files List */}
         {files.length > 0 && (
-          <div className="space-y-2">
-            <div className="flex items-center justify-between">
-              <p className="text-sm font-medium text-processing-green">
-                📁 {files.length} file(s) uploaded
+          <div className="space-y-3">
+            {files.map((file, index) => (
+              <div key={index} className="flex items-center justify-between bg-secondary/30 p-3 rounded border border-border">
+                <div className="flex items-center gap-3">
+                  <File className="h-4 w-4 text-card-foreground" />
+                  <div>
+                    <p className="text-sm text-card-foreground font-medium">{file.name}</p>
+                    <p className="text-xs text-card-foreground/60">{formatFileSize(file.size)}</p>
+                  </div>
+                </div>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => removeFile(index)}
+                  className="h-6 w-6 p-0 hover:bg-processing-red/20"
+                >
+                  <X className="h-3 w-3" />
+                </Button>
+              </div>
+            ))}
+
+            {/* Status Bar */}
+            <div className="bg-processing-green/20 border border-processing-green/30 rounded p-3">
+              <p className="text-sm font-medium text-processing-green flex items-center gap-2">
+                ✓ {files.length} file(s) uploaded
               </p>
             </div>
-            
-            <div className="space-y-2 max-h-32 overflow-y-auto">
-              {files.map((file, index) => (
-                <div key={index} className="flex items-center justify-between bg-secondary p-2 rounded">
-                  <div className="flex items-center gap-2">
-                    <File className="h-4 w-4 text-processing-blue" />
-                    <span className="text-sm text-card-foreground truncate">{file.name}</span>
-                    <span className="text-xs text-card-foreground/60">({formatFileSize(file.size)})</span>
+
+            {/* Uploaded Files Section */}
+            <div className="space-y-2">
+              <h4 className="text-card-foreground font-medium">Uploaded Files:</h4>
+              <div className="space-y-1">
+                {files.map((file, index) => (
+                  <div key={`list-${index}`} className="flex items-center gap-2 text-sm">
+                    <File className="h-3 w-3 text-card-foreground" />
+                    <span className="text-card-foreground">{file.name}</span>
+                    <span className="text-card-foreground/60">({formatFileSize(file.size)})</span>
                   </div>
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    onClick={() => removeFile(index)}
-                    className="h-6 w-6 p-0 hover:bg-processing-red/20"
-                  >
-                    <X className="h-3 w-3" />
-                  </Button>
-                </div>
-              ))}
+                ))}
+              </div>
             </div>
           </div>
         )}
