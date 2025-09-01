@@ -51,20 +51,20 @@ const Index = () => {
       <div className="h-full overflow-y-auto bg-background">
         {/* Main Content */}
         <div className="p-6 space-y-6">
-          {/* Processing Settings - Always visible at top */}
-          <ProcessingSettings
-            pageLimit={pageLimit}
-            parallelWorkers={parallelWorkers}
-            fileTypes={fileTypes}
-            onPageLimitChange={setPageLimit}
-            onParallelWorkersChange={setParallelWorkers}
-            onFileTypesChange={setFileTypes}
-          />
-
           {/* Two Column Layout */}
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-            {/* Left Column - File Upload */}
+            {/* Left Column - Upload Documents */}
             <div className="space-y-6">
+              {/* Processing Settings inside Upload Documents area */}
+              <ProcessingSettings
+                pageLimit={pageLimit}
+                parallelWorkers={parallelWorkers}
+                fileTypes={fileTypes}
+                onPageLimitChange={setPageLimit}
+                onParallelWorkersChange={setParallelWorkers}
+                onFileTypesChange={setFileTypes}
+              />
+
               <FileUpload files={files} onFilesChange={setFiles} />
               
               {files.length > 0 && (
@@ -79,7 +79,7 @@ const Index = () => {
               )}
             </div>
 
-            {/* Right Column - Status and Output */}
+            {/* Right Column - Processing Status */}
             <div className="space-y-6">
               <ProcessingStatus
                 totalFiles={files.length}
