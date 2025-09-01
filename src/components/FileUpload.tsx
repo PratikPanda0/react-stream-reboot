@@ -62,30 +62,31 @@ export const FileUpload: React.FC<FileUploadProps> = ({ files, onFilesChange }) 
         </CardTitle>
       </CardHeader>
       <CardContent className="space-y-4">
-        <div className="space-y-2">
-          <p className="text-sm text-card-foreground/80">Choose PDF or ZIP files</p>
-          
-          <div
-            {...getRootProps()}
-            className={`upload-area border-2 border-dashed rounded-lg p-8 text-center cursor-pointer transition-colors ${
-              isDragActive || dragOver
-                ? 'border-primary bg-primary/5 drag-over'
-                : 'border-border hover:border-primary/50'
-            }`}
-          >
-            <input {...getInputProps()} />
-            <Upload className="h-12 w-12 text-primary mx-auto mb-4" />
-            <p className="text-card-foreground mb-2">
-              {isDragActive ? 'Drop files here...' : 'Drag and drop files here'}
-            </p>
-            <p className="text-sm text-card-foreground/60 mb-4">
-              Limit 200MB per file • PDF, ZIP
-            </p>
-            <Button variant="outline" className="bg-secondary border-border text-card-foreground hover:bg-primary hover:text-primary-foreground">
-              Browse Files
-            </Button>
-          </div>
+        <div
+          {...getRootProps()}
+          className={`upload-area border-2 border-dashed rounded-lg p-4 text-center cursor-pointer transition-colors ${
+            isDragActive || dragOver
+              ? 'border-primary bg-primary/5 drag-over'
+              : 'border-border hover:border-primary/50'
+          }`}
+        >
+          <input {...getInputProps()} />
+          <Upload className="h-8 w-8 text-primary mx-auto mb-2" />
+          <p className="text-card-foreground/60 text-sm mb-2">
+            Drag and drop files or click to browse
+          </p>
+          <Button variant="outline" size="sm" className="bg-secondary border-border text-card-foreground hover:bg-primary hover:text-primary-foreground">
+            Browse Files
+          </Button>
         </div>
+
+        {files.length === 0 && (
+          <div className="text-center py-2">
+            <p className="text-card-foreground/60 text-sm">
+              👆 Please upload PDF or ZIP files to begin processing
+            </p>
+          </div>
+        )}
 
         {files.length > 0 && (
           <div className="space-y-2">
