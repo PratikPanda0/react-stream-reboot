@@ -2,7 +2,8 @@
 import React from 'react';
 import { Layout } from '@/components/Layout';
 import { Button } from '@/components/ui/button';
-import { RefreshCw, X, BarChart3, FileText } from 'lucide-react';
+import { RefreshCw, X, BarChart3, FileText, Download, ArrowLeft } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 import {
   Table,
   TableBody,
@@ -13,6 +14,8 @@ import {
 } from '@/components/ui/table';
 
 const Statistics = () => {
+  const navigate = useNavigate();
+
   const summaryData = {
     totalSessions: 6,
     totalFilesProcessed: 11,
@@ -28,6 +31,20 @@ const Statistics = () => {
     { id: 4, timestamp: "2024-01-15 16:05:00", sessionId: "sess_005", fileCount: 1, filenames: "contract.zip", processingTimes: "9.7s", finishTime: "16:05:12", totalTime: "12s", status: "Success", processed: 1, failed: 0, skipped: 0 },
     { id: 5, timestamp: "2024-01-15 17:30:00", sessionId: "sess_006", fileCount: 2, filenames: "proposal.pdf, attachment.zip", processingTimes: "18.9s", finishTime: "17:30:22", totalTime: "22s", status: "Success", processed: 2, failed: 0, skipped: 0 },
   ];
+
+  const handleDownloadCSV = () => {
+    // TODO: Implement CSV download
+    console.log('Download CSV clicked');
+  };
+
+  const handleDownloadJSON = () => {
+    // TODO: Implement JSON download
+    console.log('Download JSON clicked');
+  };
+
+  const handleBackToProcessing = () => {
+    navigate('/');
+  };
 
   return (
     <Layout>
@@ -122,6 +139,28 @@ const Statistics = () => {
                   ))}
                 </TableBody>
               </Table>
+            </div>
+
+            {/* Export Statistics Section */}
+            <div className="mt-6 pt-6 border-t border-border">
+              <div className="flex items-center gap-2 mb-4">
+                <Download className="h-5 w-5 text-primary" />
+                <h3 className="text-lg font-semibold text-card-foreground">💾 Export Statistics</h3>
+              </div>
+              <div className="flex flex-wrap gap-3 mb-4">
+                <Button variant="outline" onClick={handleDownloadCSV} className="flex items-center gap-2">
+                  <Download className="h-4 w-4" />
+                  Download CSV
+                </Button>
+                <Button variant="outline" onClick={handleDownloadJSON} className="flex items-center gap-2">
+                  <Download className="h-4 w-4" />
+                  Download JSON
+                </Button>
+              </div>
+              <Button variant="ghost" onClick={handleBackToProcessing} className="flex items-center gap-2 text-primary hover:text-primary/80">
+                <ArrowLeft className="h-4 w-4" />
+                Back to Processing
+              </Button>
             </div>
           </div>
         </div>
