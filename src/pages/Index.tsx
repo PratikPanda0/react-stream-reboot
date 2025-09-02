@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { Layout } from '@/components/Layout';
 import { ProcessingSettings } from '@/components/ProcessingSettings';
@@ -110,6 +109,13 @@ const Index = () => {
                   isProcessing={isProcessing}
                 />
                 
+                <ProcessingDetails 
+                  isVisible={files.length > 0} 
+                  files={files}
+                  isProcessing={isProcessing}
+                  processedFiles={processedFiles}
+                />
+                
                 <OutputFiles
                   jsonFiles={jsonFiles}
                   tiffFiles={tiffFiles}
@@ -118,16 +124,6 @@ const Index = () => {
               </div>
             )}
           </div>
-
-          {/* Processing Details - Full width at bottom - Only show after processing starts */}
-          {hasProcessed && (
-            <ProcessingDetails 
-              isVisible={files.length > 0} 
-              files={files}
-              isProcessing={isProcessing}
-              processedFiles={processedFiles}
-            />
-          )}
         </div>
       </div>
     </Layout>
