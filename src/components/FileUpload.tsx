@@ -64,7 +64,7 @@ export const FileUpload: React.FC<FileUploadProps> = ({ files, onFilesChange }) 
       </CardHeader>
       <CardContent className="space-y-4">
         {/* Processing Settings Collapsible */}
-        <div className="bg-secondary/20 rounded-lg border border-border">
+        <div className="bg-secondary/20 rounded-lg border border-border hidden">
           <button
             onClick={() => setIsSettingsExpanded(!isSettingsExpanded)}
             className="w-full flex items-center gap-2 p-3 text-left hover:bg-secondary/30 transition-colors"
