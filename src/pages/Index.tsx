@@ -43,12 +43,22 @@ const Index = () => {
       setProcessingTime(prev => prev + 0.1);
     }, 100);
 
+    // Simulate processing files one by one
+    let currentFile = 0;
+    const processInterval = setInterval(() => {
+      if (currentFile < files.length - 1) {
+        setProcessedFiles(prev => prev + 1);
+        currentFile++;
+      }
+    }, 1500);
+
     setTimeout(() => {
       setIsProcessing(false);
       clearInterval(interval);
+      clearInterval(processInterval);
       setProcessingTime(9.0);
       setProcessedFiles(1);
-      setFailedFiles(1);
+      setFailedFiles(files.length - 1);
       setSkippedFiles(0);
       setJsonFiles(1);
       setTiffFiles(1);
@@ -110,7 +120,14 @@ const Index = () => {
           </div>
 
           {/* Processing Details - Full width at bottom - Only show after processing starts */}
-          {hasProcessed && <ProcessingDetails isVisible={files.length > 0} />}
+          {hasProcessed && (
+            <ProcessingDetails 
+              isVisible={files.length > 0} 
+              files={files}
+              isProcessing={isProcessing}
+              processedFiles={processedFiles}
+            />
+          )}
         </div>
       </div>
     </Layout>

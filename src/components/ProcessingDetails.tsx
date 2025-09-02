@@ -1,14 +1,64 @@
 
 import React from 'react';
-import { FileText, Activity } from 'lucide-react';
+import { Activity } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
+
+interface UploadedFile {
+  name: string;
+  size: number;
+  type: string;
+}
 
 interface ProcessingDetailsProps {
   isVisible: boolean;
+  files: UploadedFile[];
+  isProcessing: boolean;
+  processedFiles: number;
 }
 
-export const ProcessingDetails: React.FC<ProcessingDetailsProps> = ({ isVisible }) => {
+export const ProcessingDetails: React.FC<ProcessingDetailsProps> = ({ 
+  isVisible, 
+  files, 
+  isProcessing, 
+  processedFiles 
+}) => {
   if (!isVisible) return null;
+
+  const getFileStatus = (index: number) => {
+    if (isProcessing) {
+      if (index < processedFiles) {
+        return { status: '✓ Completed', color: 'text-processing-green', message: 'Processing successful' };
+      } else if (index === processedFiles) {
+        return { status: '⏳ Processing...', color: 'text-processing-yellow', message: 'Currently processing' };
+      } else {
+        return { status: '⏸️ Pending', color: 'text-card-foreground/60', message: 'Waiting to process' };
+      }
+    } else {
+      // After processing is complete
+      if (index === 0) {
+        return { status: '✓ Completed', color: 'text-processing-green', message: 'Processing successful' };
+      } else {
+        return { status: '❌ Failed', color: 'text-processing-red', message: 'Processing failed' };
+      }
+    }
+  };
+
+  const getProcessingTime = (index: number) => {
+    if (!isProcessing && index === 0) {
+      return '4.2s';
+    } else if (isProcessing && index < processedFiles) {
+      return `${(Math.random() * 5 + 1).toFixed(1)}s`;
+    }
+    return '-';
+  };
+
+  const getJsonOutput = (index: number) => {
+    if ((!isProcessing && index === 0) || (isProcessing && index < processedFiles)) {
+      return `${files[index].name.replace(/\.[^/.]+$/, '')}_output.json`;
+    }
+    return '-';
+  };
 
   return (
     <Card className="bg-card border-border">
@@ -20,28 +70,33 @@ export const ProcessingDetails: React.FC<ProcessingDetailsProps> = ({ isVisible 
       </CardHeader>
       <CardContent>
         <div className="overflow-x-auto">
-          <table className="w-full text-sm">
-            <thead>
-              <tr className="border-b border-border">
-                <th className="text-left py-2 text-card-foreground/80">Filename</th>
-                <th className="text-left py-2 text-card-foreground/80">Status</th>
-                <th className="text-left py-2 text-card-foreground/80">Message</th>
-                <th className="text-left py-2 text-card-foreground/80">Processing Time</th>
-                <th className="text-left py-2 text-card-foreground/80">JSON Output</th>
-              </tr>
-            </thead>
-            <tbody className="space-y-1">
-              <tr className="bg-secondary/20">
-                <td className="py-2 text-card-foreground">example_file.pdf</td>
-                <td className="py-2">
-                  <span className="text-processing-green">✓ Completed</span>
-                </td>
-                <td className="py-2 text-card-foreground/60">Processing successful</td>
-                <td className="py-2 text-processing-blue">4.2s</td>
-                <td className="py-2 text-processing-blue">output.json</td>
-              </tr>
-            </tbody>
-          </table>
+          <Table>
+            <TableHeader>
+              <TableRow className="border-b border-border">
+                <TableHead className="text-card-foreground/80">Filename</TableHead>
+                <TableHead className="text-card-foreground/80">Status</TableHead>
+                <TableHead className="text-card-foreground/80">Message</TableHead>
+                <TableHead className="text-card-foreground/80">Processing Time</TableHead>
+                <TableHead className="text-card-foreground/80">JSON Output</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {files.map((file, index) => {
+                const fileStatus = getFileStatus(index);
+                return (
+                  <TableRow key={index} className="bg-secondary/20">
+                    <TableCell className="text-card-foreground">{file.name}</TableCell>
+                    <TableCell>
+                      <span className={fileStatus.color}>{fileStatus.status}</span>
+                    </TableCell>
+                    <TableCell className="text-card-foreground/60">{fileStatus.message}</TableCell>
+                    <TableCell className="text-processing-blue">{getProcessingTime(index)}</TableCell>
+                    <TableCell className="text-processing-blue">{getJsonOutput(index)}</TableCell>
+                  </TableRow>
+                );
+              })}
+            </TableBody>
+          </Table>
         </div>
       </CardContent>
     </Card>
