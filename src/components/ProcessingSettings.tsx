@@ -23,7 +23,7 @@ export const ProcessingSettings: React.FC<ProcessingSettingsProps> = ({
   onParallelWorkersChange,
   onFileTypesChange,
 }) => {
-  const [isCollapsed, setIsCollapsed] = useState(false);
+  const [isCollapsed, setIsCollapsed] = useState(true);
 
   const handleFileTypeChange = (value: string) => {
     const types = value.split(',').filter(Boolean);
@@ -58,14 +58,14 @@ export const ProcessingSettings: React.FC<ProcessingSettingsProps> = ({
             <Slider
               value={[pageLimit]}
               onValueChange={(value) => onPageLimitChange(value[0])}
-              max={100}
+              max={50}
               min={1}
               step={1}
               className="w-full"
             />
             <div className="flex justify-between text-xs text-card-foreground/60">
               <span>1</span>
-              <span>100</span>
+              <span>50</span>
             </div>
           </div>
 
@@ -76,14 +76,14 @@ export const ProcessingSettings: React.FC<ProcessingSettingsProps> = ({
             <Slider
               value={[parallelWorkers]}
               onValueChange={(value) => onParallelWorkersChange(value[0])}
-              max={10}
+              max={4}
               min={1}
               step={1}
               className="w-full"
             />
             <div className="flex justify-between text-xs text-card-foreground/60">
               <span>1</span>
-              <span>10</span>
+              <span>4</span>
             </div>
           </div>
 
