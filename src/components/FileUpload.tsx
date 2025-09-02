@@ -109,17 +109,9 @@ export const FileUpload: React.FC<FileUploadProps> = ({ files, onFilesChange }) 
           </div>
         </div>
 
-        {files.length === 0 && (
-          <div className="text-center py-2">
-            <p className="text-card-foreground/60 text-sm">
-              👆 Please upload PDF or ZIP files to begin processing
-            </p>
-          </div>
-        )}
-
-        {/* Uploaded Files List */}
+        {/* Show uploaded files in the screenshot format */}
         {files.length > 0 && (
-          <div className="space-y-3">
+          <div className="space-y-2">
             {files.map((file, index) => (
               <div key={index} className="flex items-center justify-between bg-secondary/30 p-3 rounded border border-border">
                 <div className="flex items-center gap-3">
@@ -140,14 +132,14 @@ export const FileUpload: React.FC<FileUploadProps> = ({ files, onFilesChange }) 
               </div>
             ))}
 
-            {/* Status Bar */}
+            {/* Green status bar */}
             <div className="bg-processing-green/20 border border-processing-green/30 rounded p-3">
               <p className="text-sm font-medium text-processing-green flex items-center gap-2">
                 ✓ {files.length} file(s) uploaded
               </p>
             </div>
 
-            {/* Uploaded Files Section */}
+            {/* Uploaded Files List */}
             <div className="space-y-2">
               <h4 className="text-card-foreground font-medium">Uploaded Files:</h4>
               <div className="space-y-1">
@@ -160,6 +152,14 @@ export const FileUpload: React.FC<FileUploadProps> = ({ files, onFilesChange }) 
                 ))}
               </div>
             </div>
+          </div>
+        )}
+
+        {files.length === 0 && (
+          <div className="text-center py-2">
+            <p className="text-card-foreground/60 text-sm">
+              👆 Please upload PDF or ZIP files to begin processing
+            </p>
           </div>
         )}
       </CardContent>

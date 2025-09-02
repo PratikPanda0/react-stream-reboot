@@ -21,18 +21,22 @@ const Index = () => {
   const [parallelWorkers, setParallelWorkers] = useState(4);
   const [fileTypes, setFileTypes] = useState(['I', 'PDF', 'ZIP']);
   const [isProcessing, setIsProcessing] = useState(false);
-  const [processedFiles, setProcessedFiles] = useState(1);
-  const [failedFiles, setFailedFiles] = useState(1);
+  const [hasProcessed, setHasProcessed] = useState(false);
+  const [processedFiles, setProcessedFiles] = useState(0);
+  const [failedFiles, setFailedFiles] = useState(0);
   const [skippedFiles, setSkippedFiles] = useState(0);
-  const [processingTime, setProcessingTime] = useState(9.0);
-  const [jsonFiles, setJsonFiles] = useState(1);
-  const [tiffFiles, setTiffFiles] = useState(1);
+  const [processingTime, setProcessingTime] = useState(0);
+  const [jsonFiles, setJsonFiles] = useState(0);
+  const [tiffFiles, setTiffFiles] = useState(0);
 
   const handleProcessFiles = () => {
     if (files.length === 0) return;
     
     setIsProcessing(true);
+    setHasProcessed(true);
     setProcessingTime(0);
+    setProcessedFiles(0);
+    setFailedFiles(0);
     
     // Simulate processing
     const interval = setInterval(() => {
@@ -43,6 +47,11 @@ const Index = () => {
       setIsProcessing(false);
       clearInterval(interval);
       setProcessingTime(9.0);
+      setProcessedFiles(1);
+      setFailedFiles(1);
+      setSkippedFiles(0);
+      setJsonFiles(1);
+      setTiffFiles(1);
     }, 3000);
   };
 
@@ -79,27 +88,29 @@ const Index = () => {
               )}
             </div>
 
-            {/* Right Column - Processing Status */}
-            <div className="space-y-6">
-              <ProcessingStatus
-                totalFiles={files.length}
-                processedFiles={processedFiles}
-                failedFiles={failedFiles}
-                skippedFiles={skippedFiles}
-                processingTime={processingTime}
-                isProcessing={isProcessing}
-              />
-              
-              <OutputFiles
-                jsonFiles={jsonFiles}
-                tiffFiles={tiffFiles}
-                isProcessingComplete={!isProcessing && files.length > 0}
-              />
-            </div>
+            {/* Right Column - Processing Status - Only show after processing starts */}
+            {hasProcessed && (
+              <div className="space-y-6">
+                <ProcessingStatus
+                  totalFiles={files.length}
+                  processedFiles={processedFiles}
+                  failedFiles={failedFiles}
+                  skippedFiles={skippedFiles}
+                  processingTime={processingTime}
+                  isProcessing={isProcessing}
+                />
+                
+                <OutputFiles
+                  jsonFiles={jsonFiles}
+                  tiffFiles={tiffFiles}
+                  isProcessingComplete={!isProcessing && files.length > 0}
+                />
+              </div>
+            )}
           </div>
 
-          {/* Processing Details - Full width at bottom */}
-          <ProcessingDetails isVisible={files.length > 0} />
+          {/* Processing Details - Full width at bottom - Only show after processing starts */}
+          {hasProcessed && <ProcessingDetails isVisible={files.length > 0} />}
         </div>
       </div>
     </Layout>
